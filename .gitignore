@@ -1,0 +1,5 @@
+# pychache
+__pycache__/
+
+# testing
+io/outputs/testing/
