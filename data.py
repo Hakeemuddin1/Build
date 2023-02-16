@@ -70,6 +70,7 @@ class EntsoePandasClient():
             start=start_date,
             end=end_date,
         )
+        
     def query_scheduled_exchanges(
         self,
         country_from,
