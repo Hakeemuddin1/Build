@@ -1,5 +1,6 @@
 import time
 import pandas as pd
+import os
 from entsoe import EntsoePandasClient
 from requests.exceptions import RequestException
 from tenacity import retry, stop_after_attempt, wait_fixed
@@ -20,6 +21,23 @@ class EUZOnalInput():
         return self.df.copy()
 
 
+class CSVInput(EUZOnalInput):
+    '''
+    ReEDS EU_Zonal .csv input files.
+    '''
+    def read_data(self, *args, **kwargs):
+        if self.df is None:
+            self.df = pd.read_csv(
+                        os.path.join(
+                            self.file
+                        ),
+                        header=self.header,
+                        **kwargs
+            )
+            if self.col_names is not None:
+                self.df.columns = self.col_names
+
+
 class EntsoePandasClient():
     """ Client to perform API calls and return the data parsed
     as a Pandas Series or DataFrame
@@ -32,7 +50,7 @@ class EntsoePandasClient():
             raise TypeError("API key cannot be None")
         self.api_key = api_key
         self.client = EntsoePandasClient(api_key=api_key)
-    
+
     @retry(ConnectionError, tries=5, delay=1)
     def _base_query(
         self,
@@ -41,8 +59,8 @@ class EntsoePandasClient():
         **kwargs
     ):
         """
-        Queries the ENTSO-E TO using the provided query function and parameters.
-        Retries if a connection error occurs or if too many requests are made.
+        Queries the ENTSO-E TP by the query function and parameters.
+        Retries on a connection error or if too many requests are made.
         Returns the response content as a string.
         """
         try:
@@ -52,7 +70,6 @@ class EntsoePandasClient():
             raise e
         except Exception as e:
             raise ValueError(f"Failed to query data: {str(e)}")
-        
         # Return the response content as a string
         return response.text
 
@@ -63,14 +80,16 @@ class EntsoePandasClient():
         start_date,
         end_date,
     ):
-        return self._base_query(
+        crossborder_flows = self._base_query(
             self.client.query_crossborder_flows,
             country_from=country_from,
             country_to=country_to,
             start=start_date,
             end=end_date,
         )
-        
+
+        return crossborder_flows
+
     def query_scheduled_exchanges(
         self,
         country_from,
@@ -78,10 +97,22 @@ class EntsoePandasClient():
         start_date,
         end_date,
     ):
-        return self._base_query(
+        scheduled_exchanges = self._base_query(
             self.client.scheduled_exchanges,
             country_from=country_from,
             country_to=country_to,
             start=start_date,
             end=end_date,
         )
+        return scheduled_exchanges
+
+
+# All inputs for the India Zonal PCM based on ReEDS-India data
+INPUTS = {
+    'nodes': CSVInput(
+        os.path.join(
+            'io',
+            'inputs',
+            'zones.csv')
+        )
+}
