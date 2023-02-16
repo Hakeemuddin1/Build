@@ -1,7 +1,0 @@
-ERROR:__main__:Traceback (most recent call last):
-  File "c:\Users\HakeemuddinFakhruddi\encoord\encoord Model Ready Datasets - Dokumente\EU Zonal PCM\Build\eu_zonal_pcm.py", line 44, in <module>
-    SETTINGS['out_dir'] = create_output_directory(**SETTINGS)
-  File "c:\Users\HakeemuddinFakhruddi\encoord\encoord Model Ready Datasets - Dokumente\EU Zonal PCM\Build\helpers.py", line 57, in create_output_directory
-    return out_dir
-UnboundLocalError: local variable 'out_dir' referenced before assignment
-

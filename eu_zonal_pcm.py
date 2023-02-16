@@ -29,7 +29,7 @@ if __name__ == '__main__':
     # Use dictionary settings as args
     parser.add_argument("--version", default='0', help='some help string')
     parser.add_argument("--milestones", default='0')
-    parser.add_argument("--build_type", default='true')
+    parser.add_argument("--build_type", default='test')
     parser.add_argument("--model_path", default='latest_test')
     parser.add_argument("--year", default=2022)
     parser.add_argument("--scen_name", default='reference_2022')

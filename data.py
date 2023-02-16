@@ -14,7 +14,9 @@ class EUZOnalInput():
     def __init__(self, file, header='infer', col_names=None):
         self.file = file
         self.df = None
-
+        self.header = header
+        self.col_names = col_names
+        
     def get_data(self, *args, **kwargs):
         if self.df is None:
             self.read_data(*args, **kwargs)
